@@ -1,8 +1,12 @@
 package com.green.board;
 
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import com.green.board.model.BoardInsReq;
+import com.green.board.model.BoardSelOneRes;
+import com.green.board.model.BoardSelRes;
+import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 /*
     Controller의 역할: 요청(request)을 받고 응답(Response)처리하는 객체
@@ -26,7 +30,7 @@ import org.springframework.web.bind.annotation.RestController;
     브라우저의 주소창에 주소값을 적고 엔터는 URL + GET 방식 + 데이터 보내는 방식(Key/value)으로 요청을 보낸다.
     데이터를 보낼 때 보여지나 안 보여지나 차이로 보낼 수 있는데
     1. 쿼리스트림 방식 (파라미터라고 부르기도 함), url 에 데이터를 포함하는 방식
-    2. body 에 담아서 보내는 방식
+    2. body 에 담아서 보내는 방식 (FormData, JSON)
 
     쿼리스트링 모양: url + 쿼리스트링 (?로 시작 key=value, 여러개라면 & 구분)
                     www.naver.com?name=홍길동&age=12&heignt=172.1
@@ -34,6 +38,19 @@ import org.springframework.web.bind.annotation.RestController;
     대용량의 데이터를 보내야할 때도 body에 데이터를 담아서 보낸다.
     url은 결국 길이 제한이 있기 때문에
     url에 데이터를 포함하는 쿼리스트링은 대용량을 보낼 수 없다.
+
+    JSON(JavaScript Object Notation):자바스크립트에서 객체를 만들 때 사용하는 문법을 이용하여
+                                     데이터를 표현하는 포맷(형식), Key와 Value로 이루어져 있음.
+    예를들어 name은 홍길동, age는 22살, height는 178.2 데이터를 JSON으로 표현을 하면
+
+    {
+        "name": "홍길동",
+        "age": 22,
+        "height": 178.2
+    }
+    이렇게 표현하는 문자열이다.
+    {}는 객체를 의미하고 []는 배열을 의미한다. ""는 문자열, 숫자형은 ""없이 표현한다.
+    Key는 무조건 "" 감싸줘야 한다.
 
     Restful 이전에는 get, post 방식 밖에 없었음.
     get 방식은 주로 쿼리스트링 방식을 사용하고 - 데이터를 읽어올 때 (간혹 삭제때도 사용함)
@@ -88,15 +105,43 @@ import org.springframework.web.bind.annotation.RestController;
     (put / patch) /board - 글 수정
     (delete) /board - 글 삭제 (Path Variable or Query String으로 pk값 전달)
  */
-@RestController
+
+
+/*
+    final 붙은 멤버필드 DI(참조값 주입)받을 수 있게 생성자를 만든다.
+    에노테이션 생략하면 오버로딩된 생성자를 직접 만들어주면 된다.
+ */
+@RequiredArgsConstructor
+@RestController //빈 등록 + 컨트롤러 임명, 빈등록은 스프링 컨테이너가 직접 객체화를 한다.
 @RequestMapping("/board")
 public class BoardController {
+    private final BoardService service; //final 붙으면 생성자 무조건 만들어야함, boardService가 먼저 객체 주소를 담아야됨(DI가 먼저된다)
+
+   /*   @RequiredArgsConstructor 애노테이션을 붙이면 아래 생성자가 자동으로 만들어진다.
+        public BoardController(BoardService boardService) {
+        this.boardService = boardService;
+    }*/
+
 
     //insert(Creat)
-    @PostMapping("/board") // (post) /board 요청이 오면 이 메소드가 응답 담당자
+    @PostMapping // (post) /board 요청이 오면 이 메소드가 응답 담당자
     //@PostMapping("/board") : @RequestMapping("/board") 이 코드가 없었다면 URL을 작성해줘야 한다.
-    public int insBoard() {
-        return 1;
+    //@RequestBody는 요청이 올때 데이터가 JSON형태로 오니까 거기에 맞춰서 데이터를 받자.
+    public int insBoard(@RequestBody BoardInsReq p) {
+        System.out.println(p);
+        return service.insBoard(p);
+    }
+
+    // 객체 > JSON 바꾸는 직렬화 작업
+    // localhost:8080/board 주소창에 이렇게 치면 값들이 나온다.
+    @GetMapping
+    public List<BoardSelRes> selResList() {
+        return service.selBoardList();
+    }
+
+    @GetMapping("{boardId}")
+    public BoardSelOneRes selBoardOne(@PathVariable int boardId) {
+        return service.selBoardOne(boardId);
     }
 }
 
