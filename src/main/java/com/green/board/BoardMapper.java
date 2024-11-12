@@ -13,12 +13,16 @@ package com.green.board;
 import com.green.board.model.BoardInsReq;
 import com.green.board.model.BoardSelOneRes;
 import com.green.board.model.BoardSelRes;
+import com.green.board.model.BoardUpdReq;
 import org.apache.ibatis.annotations.Mapper;
 import java.util.List;
 
-@Mapper
+@Mapper // MyBatis에서 쓰는 애노테이션, Dao 만들때쓰는 녀석, 선언부에 있다
 public interface BoardMapper {
     int insBoard(BoardInsReq p);
     List<BoardSelRes> selBoardList();
     BoardSelOneRes selBoardOne(int p);
+    int updBoard(BoardUpdReq p); // insert, update, delete는 int쓴다.
 }
+
+// 선언부와 쿼리문만 있으면 boardDao 같은거 만들어줌

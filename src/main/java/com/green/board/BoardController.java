@@ -3,6 +3,7 @@ package com.green.board;
 import com.green.board.model.BoardInsReq;
 import com.green.board.model.BoardSelOneRes;
 import com.green.board.model.BoardSelRes;
+import com.green.board.model.BoardUpdReq;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,6 +19,7 @@ import java.util.List;
 
     @RequestMapping - URL과 Controller or Method 맵핑(연결)
                       class에 RequestMapping 전체 메소드 주소가 맵핑
+                      클래스 위에 붙음
 
     @PostMapping - URL + Post 방식으로 요청이 왔을 시 담당자
 
@@ -113,9 +115,13 @@ import java.util.List;
  */
 @RequiredArgsConstructor
 @RestController //빈 등록 + 컨트롤러 임명, 빈등록은 스프링 컨테이너가 직접 객체화를 한다.
-@RequestMapping("/board")
+@RequestMapping("/board") // /board로 왔을때 @RequestMapping이 담당
 public class BoardController {
-    private final BoardService service; //final 붙으면 생성자 무조건 만들어야함, boardService가 먼저 객체 주소를 담아야됨(DI가 먼저된다)
+    private final BoardService service;//객체화한 주소값 받고싶다는 뜻 //final 붙으면 생성자 무조건 만들어야함, boardService가 먼저 객체 주소를 담아야됨(DI가 먼저된다)
+    /*
+        @Autowired
+        private BoardService service; 강제로 열어서 DI받는 방법인데 이제 잘 안함
+     */
 
    /*   @RequiredArgsConstructor 애노테이션을 붙이면 아래 생성자가 자동으로 만들어진다.
         public BoardController(BoardService boardService) {
@@ -131,6 +137,11 @@ public class BoardController {
         System.out.println(p);
         return service.insBoard(p);
     }
+    /*
+    @PostMapping
+    public int strBoard() {
+        return "";  만약 (post) /board 이렇게 오면 위랑 이거랑 뭐를 할지 몰라서 에러
+     */
 
     // 객체 > JSON 바꾸는 직렬화 작업
     // localhost:8080/board 주소창에 이렇게 치면 값들이 나온다.
@@ -139,9 +150,15 @@ public class BoardController {
         return service.selBoardList();
     }
 
-    @GetMapping("{boardId}")
+    @GetMapping("{boardId}") //boardId 담당자
     public BoardSelOneRes selBoardOne(@PathVariable int boardId) {
         return service.selBoardOne(boardId);
+    }
+
+    @PutMapping
+    public int updBoard(@RequestBody BoardUpdReq p) {
+        System.out.println(p);
+        return service.updBoard(p);
     }
 }
 

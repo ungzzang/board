@@ -20,8 +20,9 @@
     </insert> //태그 닫는다는 뜻
 -->
 
-<mapper namespace="com.green.board.BoardMapper">
-    <insert id="insBoard">
+<!-- BoardMapper와 연결되어서 자동으로 BoardDao 만듬 -->
+<mapper namespace="com.green.board.BoardMapper"> <!--"com.green.board.BoardMapper" 이 주소랑 연결 -->
+    <insert id="insBoard"> <!--id 메소드 명과 매칭이 되어 연결된거-->
         INSERT INTO board
             SET title = #{title}
               , contents = #{contents}
@@ -39,4 +40,12 @@
         FROM board
         WHERE board_id = #{board_id}
     </select>
+
+    <update id="updBoard">
+        UPDATE board
+        SET   title = #{title}
+            , contents = #{contents}
+            , writer = #{writer}
+        WHERE board_id = #{boardId} <!--#다음 중괄호 안에는 멤버필드 적어야함-->
+    </update>
 </mapper>

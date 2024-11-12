@@ -2,6 +2,7 @@ package com.green.board;
 import com.green.board.model.BoardInsReq;
 import com.green.board.model.BoardSelOneRes;
 import com.green.board.model.BoardSelRes;
+import com.green.board.model.BoardUpdReq;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -14,11 +15,15 @@ import java.util.List;
             싱글톤(하나 돌려쓰기)으로 객체화
  */
 
-@Service
+@Service //빈등록 한거 자체가 객체화가 되라는거
 @RequiredArgsConstructor
 public class BoardService {
     //DI 받을 수 있게 세팅해 주세요. (final 붙이고 애노테이션 추가했음)
     private final BoardMapper mapper;
+
+//    public BoardService(BoardMapper mapper) {
+//        this.mapper = mapper;
+//    } // @RequiredArgsConstructor 이거 넣어서 이 생성자가 자동생성
 
     public int insBoard(BoardInsReq p) {
         return mapper.insBoard(p);
@@ -30,6 +35,10 @@ public class BoardService {
 
     public BoardSelOneRes selBoardOne(int p) {
         return mapper.selBoardOne(p);
+    }
+
+    public int updBoard(BoardUpdReq p) {
+        return mapper.updBoard(p);
     }
 }
 
