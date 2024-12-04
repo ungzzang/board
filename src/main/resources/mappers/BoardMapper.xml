@@ -13,11 +13,7 @@
 
     <태그명> 태그를 사용할 수 있다. 태그 이름과 속성값은 어떻게 처리할지 약속되어 있다.
     그 약속은 플랫폼마다 모두 다르다. 참고로 안드로이드에서는 화면을 xml파일로 구현합니다.
-    <mapper namespace="연결할 interface full path">
 
-    <insert id="연결할 메소드명">
-        insert 쿼리문 작성!
-    </insert> //태그 닫는다는 뜻
 -->
 
 <!-- BoardMapper와 연결되어서 자동으로 BoardDao 만듬 -->
@@ -41,11 +37,26 @@
         WHERE board_id = #{board_id}
     </select>
 
-    <update id="updBoard">
+    <update id="updBoard"> <!-- 다이나믹 업데이트문 (바꾸고 싶은거만 골라서 할수있음)-->
         UPDATE board
-        SET   title = #{title}
-            , contents = #{contents}
-            , writer = #{writer}
+        <set>
+            <if test="title != null and title != '' ">
+                title = #{title}
+            </if>
+            <if test=" contents != null and contents != '' ">
+                , contents = #{contents}
+            </if>
+            <if test=" writer != null and writer != '' ">
+                , writer = #{writer}
+            </if>
+        </set>
         WHERE board_id = #{boardId} <!--#다음 중괄호 안에는 멤버필드 적어야함-->
     </update>
+
+    <delete id="delBoard">
+        DELETE FROM board
+         WHERE board_id = #{boardId}
+           AND writer = #{writer}
+    </delete>
+
 </mapper>

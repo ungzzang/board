@@ -1,9 +1,6 @@
 package com.green.board;
 
-import com.green.board.model.BoardInsReq;
-import com.green.board.model.BoardSelOneRes;
-import com.green.board.model.BoardSelRes;
-import com.green.board.model.BoardUpdReq;
+import com.green.board.model.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -160,8 +157,18 @@ public class BoardController {
         System.out.println(p);
         return service.updBoard(p);
     }
+
+    /*
+      @ModelAttribute: FormData or Query String 데이타를 받을 수 있다. 생략하면 자동으로 붙음
+     */
+    @DeleteMapping
+    public int delBoard(@ModelAttribute BoardDelReq p) { //쿼리스트링으로 받아서 애노테이션 안하고 파라미터 받아도됨
+        System.out.println(p);
+        return service.delBoard(p);
+    }
 }
 
+// post, put, patch가 JSON으로 받는다. (@RequestBody 사용함) (body)
 
 
 
